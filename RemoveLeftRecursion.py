@@ -14,17 +14,16 @@ def eliminate_left_recursion(grammar):
 
         if alpha:
             # Create a new non-terminal A' for indirect left recursion
-            A_prime = A + "'"
-            grammar[A] = [production + (A_prime,) for production in beta]
+            A_dash = A + "'"
+            grammar[A] = [production + (A_dash,) for production in beta]
             # Update grammar with new productions for A'
-            grammar[A_prime] = [production + (A_prime,) for production in alpha] + [('ε',)]
+            grammar[A_dash] = [production + (A_dash,) for production in alpha] + [('ε',)]
     return grammar
 
 def print_grammar(grammar):
     for non_terminal, productions in grammar.items():
         print(f"{non_terminal} -> {' | '.join([''.join(prod) for prod in productions])}")
 
-# Test the grammar elimination function
 grammar = {
     'A': [('A', 'a'), ('A', 'b'), ('c',), ('d', 'A')],
     'B': [('B', 'b'), ('B', 'c'), ('d',)]
