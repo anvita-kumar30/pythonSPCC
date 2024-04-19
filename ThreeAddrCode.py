@@ -1,5 +1,4 @@
 def generate_tac(expression):
-    # Operator precedence dictionary
     precedence = {
         '+': 1,
         '-': 1,
@@ -27,8 +26,6 @@ def generate_tac(expression):
             elif token in precedence:  # Operator
                 while (operator_stack and operator_stack[-1] != '(' and
                        precedence[operator_stack[-1]] >= precedence[token]):
-                    if len(output_queue) < 2:
-                        raise ValueError("Insufficient operands for operator.")
                     operand2 = output_queue.pop()
                     operand1 = output_queue.pop()
                     temp = new_temp()
@@ -40,8 +37,6 @@ def generate_tac(expression):
                 operator_stack.append(token)
             elif token == ')':  # Right parenthesis
                 while operator_stack and operator_stack[-1] != '(':
-                    if len(output_queue) < 2:
-                        raise ValueError("Insufficient operands for operator.")
                     operand2 = output_queue.pop()
                     operand1 = output_queue.pop()
                     temp = new_temp()
@@ -51,10 +46,7 @@ def generate_tac(expression):
                 if operator_stack and operator_stack[-1] == '(':
                     operator_stack.pop()  # Remove the '(' from stack
 
-        # Process remaining operators in the stack
         while operator_stack:
-            if len(output_queue) < 2:
-                raise ValueError("Insufficient operands for operator.")
             operand2 = output_queue.pop()
             operand1 = output_queue.pop()
             temp = new_temp()
@@ -68,10 +60,8 @@ def generate_tac(expression):
     except Exception as e:
         print(f"Error: {e}")
 
-# Test the TAC generation function
 if __name__ == "__main__":
     # Input expression
-    expression = "a * (b + c) - d / e"
-
+    expression = "x + y * z"
     print("Generated Three Address Code (TAC):")
     generate_tac(expression)
