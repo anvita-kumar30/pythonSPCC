@@ -20,7 +20,6 @@ def eliminate_left_recursion(grammar):
             grammar[A_dash] = [production + (A_dash,) for production in alpha] + [('ε',)]
     return grammar
 
-
 def calculate_first_set(grammar):
     first = {}
 
@@ -55,6 +54,11 @@ def calculate_first_set(grammar):
         first[non_terminal] = first_set
         return first_set
 
+    # Initialize FIRST sets for all non-terminals
+    for non_terminal in grammar:
+        calculate_first(non_terminal)
+
+    return first
 
 def process_grammar_with_left_recursion(grammar):
     print("Original Grammar:")
@@ -67,18 +71,18 @@ def process_grammar_with_left_recursion(grammar):
 
     first_sets = calculate_first_set(grammar)
 
-    print("\nFIRST sets:")
-    for non_terminal, first_set in first_sets.items():
-        sorted_elements = sorted(first_set)
-        print(f"FIRST({non_terminal}) = {first_set}")
-
+    if first_sets is not None:
+        print("\nFIRST sets:")
+        for non_terminal, first_set in first_sets.items():
+            sorted_elements = sorted(first_set)
+            print(f"FIRST({non_terminal}) = {sorted_elements}")
+    else:
+        print("\nError: Failed to compute FIRST sets for the grammar.")
 
 def print_grammar(grammar):
     for non_terminal, productions in grammar.items():
         print(f"{non_terminal} -> {' | '.join([''.join(prod) for prod in productions])}")
 
-
-# Example usage with the provided grammar
 grammar = {
     'A': [('A', 'a'), ('A', 'b'), ('c',), ('d', 'A')],
     'B': [('B', 'b'), ('B', 'c'), ('d',)]

@@ -50,4 +50,4 @@ first_sets = calculate_first_set(grammar)
 print("FIRST sets:")
 for non_terminal, first_set in first_sets.items():
     sorted_elements = sorted(first_set)
-    print(f"FIRST({non_terminal}) = {first_set}")
+    print(f"FIRST({non_terminal}) = {sorted_elements}")
