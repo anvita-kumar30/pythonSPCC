@@ -1,61 +1,77 @@
-class ThreeAddressGenerator:
-    def __init__(self):
-        self.temp_count = 0
-        self.code = []
+def generate_tac(expression):
+    # Operator precedence dictionary
+    precedence = {
+        '+': 1,
+        '-': 1,
+        '*': 2,
+        '/': 2
+    }
 
-    def new_temp(self):
-        # Generate a new temporary variable name t0, t1, t2, ...
-        temp_name = f"t{self.temp_count}"
-        self.temp_count += 1
-        return temp_name
+    # Function to generate a new temporary variable (t1, t2, ...)
+    temp_count = 1
+    def new_temp():
+        nonlocal temp_count
+        temp_var = f"t{temp_count}"
+        temp_count += 1
+        return temp_var
 
-    def generate(self, op, arg1, arg2, result):
-        # Generate a three-address code instruction
-        instruction = (op, arg1, arg2, result)
-        self.code.append(instruction)
+    # Stack to handle operators and operands
+    operator_stack = []
+    output_queue = []
+    tokens = expression.split()
 
-    def generate_expression(self, postfix_expression):
-        # Parse and generate three-address code for the given postfix expression
-        tokens = postfix_expression.split()
-        stack = []
-
+    try:
         for token in tokens:
-            if token.isdigit() or (token[0] == '-' and token[1:].isdigit()):
-                # If the token is a number, push it onto the stack
-                stack.append(token)
-            else:
-                # Otherwise, it's an operator
-                if len(stack) < 2:
-                    raise ValueError("Invalid expression format")
+            if token.isalnum():  # Operand (variable or constant)
+                output_queue.append(token)
+            elif token in precedence:  # Operator
+                while (operator_stack and operator_stack[-1] != '(' and
+                       precedence[operator_stack[-1]] >= precedence[token]):
+                    if len(output_queue) < 2:
+                        raise ValueError("Insufficient operands for operator.")
+                    operand2 = output_queue.pop()
+                    operand1 = output_queue.pop()
+                    temp = new_temp()
+                    tac_statement = f"{temp} = {operand1} {operator_stack.pop()} {operand2}"
+                    output_queue.append(temp)
+                    print(tac_statement)
+                operator_stack.append(token)
+            elif token == '(':  # Left parenthesis
+                operator_stack.append(token)
+            elif token == ')':  # Right parenthesis
+                while operator_stack and operator_stack[-1] != '(':
+                    if len(output_queue) < 2:
+                        raise ValueError("Insufficient operands for operator.")
+                    operand2 = output_queue.pop()
+                    operand1 = output_queue.pop()
+                    temp = new_temp()
+                    tac_statement = f"{temp} = {operand1} {operator_stack.pop()} {operand2}"
+                    output_queue.append(temp)
+                    print(tac_statement)
+                if operator_stack and operator_stack[-1] == '(':
+                    operator_stack.pop()  # Remove the '(' from stack
 
-                arg2 = stack.pop()
-                arg1 = stack.pop()
-                result_temp = self.new_temp()
+        # Process remaining operators in the stack
+        while operator_stack:
+            if len(output_queue) < 2:
+                raise ValueError("Insufficient operands for operator.")
+            operand2 = output_queue.pop()
+            operand1 = output_queue.pop()
+            temp = new_temp()
+            tac_statement = f"{temp} = {operand1} {operator_stack.pop()} {operand2}"
+            output_queue.append(temp)
+            print(tac_statement)
 
-                # Generate code for the operation
-                self.generate(token, arg1, arg2, result_temp)
+        if len(output_queue) != 1 or operator_stack:
+            raise ValueError("Invalid expression format.")
 
-                # Push the result back onto the stack
-                stack.append(result_temp)
+    except Exception as e:
+        print(f"Error: {e}")
 
-        if len(stack) != 1:
-            raise ValueError("Invalid expression format")
-
-        return stack.pop()
-
-    def print_code(self):
-        # Print the generated three-address code
-        for instr in self.code:
-            print(instr)
-
-
-# Example usage:
+# Test the TAC generation function
 if __name__ == "__main__":
-    generator = ThreeAddressGenerator()
+    # Input expression
+    expression = "a * (b + c) - d / e"
 
-    # Example postfix expression: "2 3 + 4 5 - *"
-    postfix_expression = "2 3 + 4 5 - *"
-    result = generator.generate_expression(postfix_expression)
-
-    # Print the generated three-address code
-    generator.print_code()
+    print("Generated Three Address Code (TAC):")
+    generate_tac(expression)
