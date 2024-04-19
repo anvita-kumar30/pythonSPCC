@@ -1,39 +1,24 @@
-import re
+import time
 
+def sum_of_squares(n):
+    result = 0
+    for i in range(1, n+1):
+        result += i * i
+    return result
 
-def optimize_code(code):
-    # Regular expression to match simple arithmetic expressions
-    expr_pattern = re.compile(r'(\d+)\s*([+\-*/])\s*(\d+)')
+def sum_of_squares_optimized(n):
+    return (n * (n + 1) * (2 * n + 1)) // 6
 
-    # Find all matches of arithmetic expressions in the code
-    matches = expr_pattern.findall(code)
+# Test the original function
+start_time = time.time()
+result_original = sum_of_squares(10000)
+end_time = time.time()
+print(f"Original Function Result: {result_original}")
+print(f"Time taken by original function: {end_time - start_time} seconds")
 
-    # Iterate over each match and perform constant folding
-    for match in matches:
-        left_operand = int(match[0])
-        operator = match[1]
-        right_operand = int(match[2])
-
-        # Evaluate the arithmetic expression
-        if operator == '+':
-            result = left_operand + right_operand
-        elif operator == '-':
-            result = left_operand - right_operand
-        elif operator == '*':
-            result = left_operand * right_operand
-        elif operator == '/':
-            result = left_operand / right_operand  # Assuming Python 3 division
-
-        # Replace the original expression with the evaluated result in the code
-        code = code.replace(' '.join(match), str(result))
-
-    return code
-
-
-# Example usage:
-if __name__ == "__main__":
-    original_code = "10 + 20 * 2 - 5 / 1"
-    optimized_code = optimize_code(original_code)
-
-    print("Original Code:", original_code)
-    print("Optimized Code:", optimized_code)
+# Test the optimized function
+start_time = time.time()
+result_optimized = sum_of_squares_optimized(10000)
+end_time = time.time()
+print(f"Optimized Function Result: {result_optimized}")
+print(f"Time taken by optimized function: {end_time - start_time} seconds")
