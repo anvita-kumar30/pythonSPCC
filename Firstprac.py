@@ -9,7 +9,6 @@ def calculate_first_set(grammar):
         for production in grammar[non_terminal]:
             first_symbol = production[0]
             if is_terminal(first_symbol):
-                # Terminal symbol found, add to FIRST set
                 first_set.add(first_symbol)
             else:
                 if first_symbol != non_terminal:  # Avoid direct left recursion
@@ -31,14 +30,14 @@ def calculate_first_set(grammar):
     for non_terminal in grammar:
         calculate_first(non_terminal)
     return first
-# Example grammar
 grammar = {
-    'S': ['Aa', 'Bb'],
-    'A': ['cA', 'd'],
-    'B': ['e']
+    'S': ['aAB', 'bBC', 'cC'],
+    'A': ['d', '#'],
+    'B': ['e', 'f'],
+    'C': ['g', '#']
 }
 first_sets = calculate_first_set(grammar)
-print("FIRST sets:")
+print("First sets:")
 for non_terminal, first_set in first_sets.items():
     sorted_elements = sorted(first_set)
     print(f"FIRST({non_terminal}) = {sorted_elements}")
