@@ -1,0 +1,8 @@
+MACRO INCR &ARG1, &ARG2, &ARG3
+    A 1, &ARG1=A
+    A 2, &ARG2=B
+    A 3, &ARG3=C
+MEND
+
+INCR &ARG1, &ARG2, &ARG3
+

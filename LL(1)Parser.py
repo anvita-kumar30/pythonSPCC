@@ -1,6 +1,5 @@
 def createLL1ParsingTable(rules, nonterm_userdef, term_userdef, firsts, follows):
     parsing_table = {nonterm: {term: None for term in term_userdef} for nonterm in nonterm_userdef}
-
     for nonterm in nonterm_userdef:
         for rule in rules:
             if rule.startswith(nonterm):
@@ -18,15 +17,12 @@ def createLL1ParsingTable(rules, nonterm_userdef, term_userdef, firsts, follows)
                                 break
                     else:
                         first_set |= {'#'}
-
                     for term in first_set:
                         if term != '#':
                             parsing_table[nonterm][term] = part.split()
-
                     if '#' in first_set:
                         for term in follows[nonterm]:
                             parsing_table[nonterm][term] = ['#']
-
     print("\nLL(1) Parsing Table:")
     print("".ljust(10), end='')
     for term in term_userdef:
@@ -40,7 +36,6 @@ def createLL1ParsingTable(rules, nonterm_userdef, term_userdef, firsts, follows)
             else:
                 print("".ljust(10), end='')
         print()
-
 rules = [
     "S -> A | B C",
     "A -> a | b",
@@ -49,20 +44,16 @@ rules = [
 ]
 nonterm_userdef = ['S', 'A', 'B', 'C']
 term_userdef = ['a', 'b', 'c', 'p', '$']
-sample_input_string = "p c"
-
 firsts = {
     'S': {'a', 'b', 'p', 'c'},
     'A': {'a', 'b'},
     'B': {'p', '#'},
     'C': {'c'}
 }
-
 follows = {
     'S': {'$'},
     'A': {'$'},
     'B': {'c'},
     'C': {'$'}
 }
-
 createLL1ParsingTable(rules, nonterm_userdef, term_userdef, firsts, follows)

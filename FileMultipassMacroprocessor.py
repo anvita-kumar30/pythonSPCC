@@ -1,24 +1,16 @@
-def process_pass1(file_path):
-    mdt = []
-    mnt = {}
-    ala = {}
-
-    try:
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-    except FileNotFoundError:
-        print(f"Error: File '{file_path}' not found.")
-        return
-
+def process_pass1(input_file):
+    mdt = []  # Macro Definition Table
+    mnt = {}  # Macro Name Table
+    ala = {}  # Argument List Array
+    # Read input program from file
+    with open(input_file, 'r') as f:
+        lines = f.readlines()
     line_number = 0
     current_macro_name = None
     parameters = []
-    macro_definition = []
-
     for line in lines:
         line_number += 1
         line = line.strip()
-
         if line.startswith("MACRO"):
             # Parse macro definition
             parts = line.split()
@@ -26,47 +18,49 @@ def process_pass1(file_path):
                 print(f"Error: Invalid macro definition at line {line_number}")
                 continue
             macro_name = parts[1]
-            parameters = parts[2:] if len(parts) > 2 else []
+            parameters = [param.strip('&') for param in parts[2:]]  # Extract parameter names without '&'
             current_macro_name = macro_name
-            macro_definition = []
-            ala[macro_name] = []
+            mdt.append([macro_name])  # Initialize macro definition list with macro name
+            ala[macro_name] = {}  # Initialize argument list dictionary
             continue
-
         if line.startswith("MEND"):
-            # End of macro definition, store in MDT and update MNT
-            mdt.append(macro_definition)
+            # End of macro definition
+            if current_macro_name is None:
+                print(f"Error: MEND found without matching MACRO at line {line_number}")
+                continue
             mnt[current_macro_name] = {
                 'index': len(mdt) - 1,
                 'parameters': parameters
             }
             current_macro_name = None
-            parameters = []
-            macro_definition = []
             continue
-
         if current_macro_name:
-            # Inside macro definition, collect lines
-            macro_definition.append(line)
-            # Populate ALA with parameter labels during Pass 1
-            for param in parameters:
-                ala[macro_name].append(param)
-
+            # Inside macro definition, process macro body lines
+            mdt[-1].append(line)
+            # Parse parameter assignments in macro invocations
+            parts = [part.strip() for part in line.split(',')]
+            for part in parts:
+                if '=' in part:
+                    arg_name, arg_value = part.split('=')
+                    ala[current_macro_name][arg_name.strip()] = arg_value.strip()
     # Print Macro Definition Table (MDT)
-    print("Macro Definition Table (MDT):")
-    for idx, entry in enumerate(mdt):
-        print(f"{idx}: {' | '.join(entry)}")
-
+    print("\nMacro Definition Table (MDT):")
+    print("Index\t\tName")
+    for idx, definition in enumerate(mdt, start=1):
+        name = definition[0]
+        arguments = '\n\t\t\t\t'.join(definition[1:])
+        print(f"{idx}\t\t{name}\t{arguments}")
     # Print Macro Name Table (MNT)
     print("\nMacro Name Table (MNT):")
-    for macro_name, info in mnt.items():
-        print(f"{macro_name}: {info}")
-
-    # Print Argument List Array (ALA)
-    print("\nArgument List Array (ALA):")
-    for macro_name, arg_labels in ala.items():
-        print(f"{macro_name}: {arg_labels}")
-
-
+    print("Index\tName\tMDT index")
+    for idx, (macro_name, info) in enumerate(mnt.items(), start=1):
+        print(f"{idx}\t\t{macro_name}\t{info['index']}")
+    # Print Dummy Argument List Array (ALA) in Pass 1
+    print("\nDummy Argument List Array (ALA) in Pass 1:")
+    print("Index\tArguments")
+    for idx, (macro_name, arg_dict) in enumerate(ala.items(), start=1):
+        arguments = ', '.join(arg_dict.keys())
+        print(f"{idx}\t\t{arguments}")
 if __name__ == "__main__":
-    file_path = "macro.txt"  # Path to the input file containing macro definitions
-    process_pass1(file_path)
+    input_file = "input_code.txt"  # Path to the input file
+    process_pass1(input_file)
