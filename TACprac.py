@@ -20,7 +20,7 @@ class TACGenerator:
             elif token == ')':
                 while operator_stack and operator_stack[-1] != '(':
                     output_queue.append(operator_stack.pop())
-                operator_stack.pop()  # Remove the '(' from stack
+                operator_stack.pop()
         while operator_stack:
             output_queue.append(operator_stack.pop())
         self.build_tac(output_queue)
@@ -50,17 +50,17 @@ class TACGenerator:
         for token in tokens:
             if token.isdigit():
                 operand_stack.append(token)
-            elif token in {'+', '-', '*', '/'}:
+            elif token in {'+','-', '*', '/'}:
                 operand2 = operand_stack.pop()
                 operand1 = operand_stack.pop()
                 result_var = f't{self.temp_count}'
                 self.temp_count += 1
                 self.code.append((token, operand1, operand2, result_var))
                 operand_stack.append(result_var)
-if __name__ == "__main__":
+if __name__=="__main__":
     tac_generator = TACGenerator()
     expression = "5 * (3 + 4) - 2 / 1"
     tac = tac_generator.generate_tac(expression)
-    print("Three Address Code (TAC) for expression:", expression)
+    print("Three Address Code (TAC) for expression: ", expression)
     for quad in tac:
         print(quad)
