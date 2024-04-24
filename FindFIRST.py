@@ -1,9 +1,7 @@
 def calculate_first_set(grammar):
     first = {}
-
     def is_terminal(symbol):
         return symbol.islower() or symbol == '#'
-
     def calculate_first(non_terminal):
         if non_terminal in first:
             return first[non_terminal]
@@ -30,12 +28,9 @@ def calculate_first_set(grammar):
                     first_set.add('#')  # Add epsilon to FIRST(non_terminal)
         first[non_terminal] = first_set
         return first_set
-
     for non_terminal in grammar:
         calculate_first(non_terminal)
     return first
-
-
 # Example grammar
 grammar = {
     'S': ['Aa', 'Bb'],
