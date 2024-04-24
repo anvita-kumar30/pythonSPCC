@@ -1,28 +1,20 @@
-# import time
-# def sum_of_squares_original(n):
-#     """Original function using iterative summation."""
-#     total = 0
-#     for i in range(1, n + 1):
-#         total += i ** 2
-#     return total
-# def sum_of_squares_optimized(n):
-#     """Optimized function using a direct formula."""
-#     return (n * (n + 1) * (2 * n + 1)) // 6
-# def measure_execution_time(func, *args):
-#     """Measure execution time of a function."""
-#     start_time = time.time()
-#     result = func(*args)
-#     execution_time = time.time() - start_time
-#     return result, execution_time
-# if __name__ == "__main__":
-#     n = 10000
-#     # Measure execution time for the original function
-#     original_result, original_time = measure_execution_time(sum_of_squares_original, n)
-#     # Measure execution time for the optimized function
-#     optimized_result, optimized_time = measure_execution_time(sum_of_squares_optimized, n)
-#     # Print results
-#     print(f"Original: Sum of squares from 1 to {n}: {original_result}")
-#     print(f"Optimized: Sum of squares from 1 to {n}: {optimized_result}")
-#     # Print execution times
-#     print(f"Execution time (original): {original_time:.6f} seconds")
-#     print(f"Execution time (optimized): {optimized_time:.6f} seconds")
+def original_expression(x):
+    # Compute x^2 using exponentiation
+    return x ** 2
+
+def strength_reduction_expression(x):
+    # Compute x^2 using x * x (strength reduction)
+    return x * x
+
+# Test the original expression and strength reduction expression
+input_value = 5
+
+# Compute x^2 using original expression
+original_result = original_expression(input_value)
+
+# Compute x^2 using strength reduction expression
+reduction_result = strength_reduction_expression(input_value)
+
+# Print the results
+print(f"Original expression result for {input_value}^2:", original_result)
+print(f"Strength reduction expression result for {input_value}^2:", reduction_result)
