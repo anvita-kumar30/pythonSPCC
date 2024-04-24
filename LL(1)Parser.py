@@ -9,18 +9,22 @@ def createLL1ParsingTable(rules, nonterm_userdef, term_userdef, firsts, follows)
                     first_set = set()
                     for symbol in part.split():
                         if symbol in term_userdef:
+                            # Add the terminal symbol to the FIRST set and break the loop
                             first_set.add(symbol)
                             break
                         elif symbol in nonterm_userdef:
+                            # Union the FIRST set of the non-terminal with the current FIRST set
                             first_set |= firsts[symbol] - {'#'}
                             if '#' not in firsts[symbol]:
                                 break
+                    # If the loop completes without breaking, add '#' (epsilon) to the FIRST set
                     else:
                         first_set |= {'#'}
                     for term in first_set:
                         if term != '#':
                             parsing_table[nonterm][term] = part.split()
                     if '#' in first_set:
+                        # Add the production part to the LL(1) parsing table for each terminal in FOLLOW(nonterm)
                         for term in follows[nonterm]:
                             parsing_table[nonterm][term] = ['#']
     print("\nLL(1) Parsing Table:")
