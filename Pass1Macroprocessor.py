@@ -48,6 +48,7 @@ def process_pass1(input_code):
         name = definition[0]
         arguments = '\n\t\t\t\t'.join(definition[1:])
         print(f"{idx}\t\t{name}\t{arguments}")
+    print("\t\t\t\tMEND")
     # Print Macro Name Table (MNT)
     print("\nMacro Name Table (MNT):")
     print("Index\tName\tMDT index")
@@ -57,7 +58,7 @@ def process_pass1(input_code):
     print("\nDummy Argument List Array (ALA) in Pass 1:")
     print("Index\tArguments")
     for idx, (macro_name, arg_dict) in enumerate(ala.items(), start=1):
-        arguments = ', '.join(arg_dict.keys())
+        arguments = '\n\t\t'.join(arg_dict.keys())
         print(f"{idx}\t\t{arguments}")
 if __name__ == "__main__":
     input_code = """
